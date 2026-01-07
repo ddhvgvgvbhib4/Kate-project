@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лента - CyberSafe Net</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container feed-container">
+        <!-- Шапка соцсети -->
+        <header class="feed-header">
+            <h1>🛡️ CyberSafe Net</h1>
+            <nav>
+                <div class="user-status">
+                    <span id="welcomeUser">Привет, Ученик!</span>
+                    <small id="loginStatus">Вы вошли как: <span id="currentUsername">Ученик</span></small>
+                </div>
+                <a href="index.html" class="btn btn-small">Выйти</a>
+            </nav>
+        </header>
+
+        <main class="feed-main">
+            <!-- Единая боковая панель -->
+            <aside class="sidebar">
+                <h3>📚 Темы обучения</h3>
+                <div class="topics-list">
+                    <a href="#post-fake-news" class="topic-link">📰 Достоверность информации</a>
+                    <a href="#post-phishing" class="topic-link">🎣 Фишинг и ссылки</a>
+                    <a href="messages.html" class="topic-link">💬 Кибербуллинг в чатах</a>
+                    <a href="#" class="topic-link" onclick="alert('Этот раздел в разработке')">🛡️ Мошенничество</a>
+                    <a href="#" class="topic-link" onclick="alert('Этот раздел в разработке')">🔒 Приватность</a>
+                </div>
+                
+                <div class="quick-guide">
+                    <h4>📋 Быстрая памятка</h4>
+                    <p><strong>Надежный пароль:</strong> 12+ символов, буквы, цифры, спецсимволы.</p>
+                    <p><strong>Фишинг:</strong> Не переходи по подозрительным ссылкам.</p>
+                </div>
+                
+                <div class="user-card">
+                    <h4>Твой прогресс</h4>
+                    <p>🔵 Активен: <span id="displayUsername">Ученик</span></p>
+                    <p id="userPoints">🏆 Очков безопасности: 0</p>
+                    <div class="progress-bar-small">
+                        <div class="progress-fill-small" id="progressFill"></div>
+                    </div>
+                    <small id="progressText">Начни выполнять задания!</small>
+                </div>
+            </aside>
+
+            <!-- Основная лента постов -->
+            <section class="posts">
+                <h2>Последние посты о безопасности</h2>
+
+                <!-- Пост 1 -->
+                <article class="post" id="post1">
+                    <div class="post-header">
+                        <h3>Как распознать фейковую новость?</h3>
+                        <span class="post-meta">Автор: Админ | Тема: Медиаграмотность</span>
+                    </div>
+                    <div class="post-content">
+                        <p><strong>Ситуация:</strong> В чате класса скинули сообщение: "Завтра из-за урагана отменяются все занятия! Распространите среди родителей!!"</p>
+                        <p>Этот пример подчеркивает ключевой принцип медиаграмотности в контексте интернет-безопасности.</p>
+                        <div class="fake-alert" onclick="this.classList.toggle('expanded')">
+                            <div class="fake-alert-header">
+                                <strong>⚠️ Почему это, скорее всего, фейк?</strong> (кликни, чтобы развернуть)
+                            </div>
+                            <div class="fake-alert-content">
+                                <ol>
+                                    <li><strong>Паника и срочность:</strong> Фейки часто создают ощущение чрезвычайной ситуации.</li>
+                                    <li><strong>Неофициальный источник:</strong> Важные объявления приходят от директора или через школьный дневник.</li>
+                                    <li><strong>Просьба распространить:</strong> Настоящие сообщения так не пишут.</li>
+                                    <li><strong>Что делать?</strong> Проверить официальный сайт школы или позвонить классному руководителю.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-poll">
+                        <p><strong>А ты бы поверил(а)?</strong></p>
+                        <button class="poll-btn" onclick="votePost1(this, 'Да, сразу бы рассказал(а) маме')">Да, сразу бы рассказал(а) маме</button>
+                        <button class="poll-btn" onclick="votePost1(this, 'Засомневался(ась) бы и решил(а) проверить')">Засомневался(ась) бы и решил(а) проверить</button>
+                        <button class="poll-btn" onclick="votePost1(this, 'Нет, это явно неправда')">Нет, это явно неправда</button>
+                        <p class="poll-result">Голосов: <span id="votes-post1">0</span></p>
+                    </div>
+                </article>
+
+                <!-- Обучающие посты -->
+                <article class="post lesson-post" id="post-fake-news">
+                    <div class="post-header">
+                        <h3>📰 Проверка достоверности информации</h3>
+                        <span class="post-meta">Тема: Медиаграмотность • Урок 1</span>
+                    </div>
+                    <div class="post-content">
+                        <p><strong>Пример 1:</strong> "Вакцина вызывает рак! Доказано учеными. Поделись!"</p>
+                        <div class="interactive-task">
+                            <p>Как поступить?</p>
+                            <div class="task-options">
+                                <button class="task-btn wrong" onclick="checkAnswer(this, false, 'Поделиться без проверки — это распространение фейка!')">
+                                    Поделиться
+                                </button>
+                                <button class="task-btn correct" onclick="checkAnswer(this, true, 'Правильно! Проверь на сайтах WHO или Роскомнадзора')">
+                                    Проверить на официальных сайтах
+                                </button>
+                            </div>
+                            <div class="task-feedback"></div>
+                        </div>
+                    </div>
+                </article>
+
+                <div id="adminPostsContainer">
+                    <!-- Посты админа -->
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>© CyberSafe Net - Учебный проект. Все ситуации вымышлены.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = localStorage.getItem('currentUser') || 'Ученик';
+            
+            // Обновляем информацию о пользователе
+            document.getElementById('welcomeUser').textContent = `Привет, ${currentUser}!`;
+            document.getElementById('displayUsername').textContent = currentUser;
+            document.getElementById('currentUsername').textContent = currentUser;
+            
+            // Загружаем прогресс
+            updateProgressDisplay();
+            
+            // Загружаем посты админа
+            loadAdminPosts();
+        });
+        
+        // Функция голосования для поста 1
+        function votePost1(button, answer) {
+            const pollResult = document.getElementById('votes-post1');
+            let currentVotes = parseInt(pollResult.textContent);
+            pollResult.textContent = currentVotes + 1;
+            
+            // Деактивируем все кнопки
+            const allButtons = button.parentElement.querySelectorAll('.poll-btn');
+            allButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = '0.6';
+            });
+            
+            // Подсвечиваем выбранную кнопку
+            button.style.backgroundColor = '#4CAF50';
+            button.style.color = 'white';
+            
+            // Сохраняем ответ
+            saveStudentAnswer('post1', 'vote', answer);
+            
+            // Добавляем баллы
+            addPoints(10, 'Участие в опросе');
+        }
+        
+        // Проверка ответов в заданиях
+        function checkAnswer(button, isCorrect, message) {
+            const feedbackDiv = button.closest('.interactive-task').querySelector('.task-feedback');
+            
+            if (isCorrect) {
+                feedbackDiv.style.backgroundColor = '#d4edda';
+                feedbackDiv.style.color = '#155724';
+                feedbackDiv.innerHTML = `<strong>✅ Правильно!</strong><br>${message}<br><small>+10 баллов</small>`;
+                addPoints(10, 'Правильный ответ');
+            } else {
+                feedbackDiv.style.backgroundColor = '#f8d7da';
+                feedbackDiv.style.color = '#721c24';
+                feedbackDiv.innerHTML = `<strong>❌ Не совсем</strong><br>${message}`;
+                
+                // Показываем правильный ответ
+                const correctBtn = button.parentElement.querySelector('.task-btn.correct');
+                if (correctBtn) {
+                    correctBtn.style.backgroundColor = '#4CAF50';
+                    correctBtn.style.color = 'white';
+                }
+            }
+            
+            feedbackDiv.style.display = 'block';
+            
+            // Деактивируем кнопки
+            const allButtons = button.parentElement.querySelectorAll('.task-btn');
+            allButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = '0.6';
+            });
+            
+            // Сохраняем ответ
+            saveStudentAnswer('fake-news', 'task', button.textContent.trim());
+        }
+        
+        // Добавление баллов
+        function addPoints(points, reason) {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) return;
+            
+            let userProgress = JSON.parse(localStorage.getItem('userProgress')) || {};
+            if (!userProgress[currentUser]) {
+                userProgress[currentUser] = { points: 0, answersCount: 0 };
+            }
+            
+            userProgress[currentUser].points += points;
+            userProgress[currentUser].answersCount += 1;
+            localStorage.setItem('userProgress', JSON.stringify(userProgress));
+            
+            // Обновляем отображение
+            updateProgressDisplay();
+            
+            // Показываем уведомление
+            showNotification(`+${points} баллов! ${reason}`);
+        }
+        
+        // Сохранение ответа
+        function saveStudentAnswer(lessonId, type, answer) {
+            const answerData = {
+                lessonId: lessonId,
+                type: type,
+                answer: answer,
+                student: localStorage.getItem('currentUser') || 'Аноним',
+                timestamp: new Date().toISOString()
+            };
+            
+            let answers = JSON.parse(localStorage.getItem('studentAnswers')) || [];
+            answers.push(answerData);
+            localStorage.setItem('studentAnswers', JSON.stringify(answers));
+        }
+        
+        // Обновление отображения прогресса
+        function updateProgressDisplay() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) return;
+            
+            const progress = JSON.parse(localStorage.getItem('userProgress')) || {};
+            const userData = progress[currentUser];
+            
+            if (userData) {
+                document.getElementById('userPoints').textContent = `🏆 Очков безопасности: ${userData.points}`;
+                
+                // Обновляем прогресс-бар
+                const maxPoints = 100; // Максимум для отображения
+                const percentage = Math.min((userData.points / maxPoints) * 100, 100);
+                document.getElementById('progressFill').style.width = `${percentage}%`;
+                
+                if (userData.points > 0) {
+                    document.getElementById('progressText').textContent = `${percentage.toFixed(0)}% выполнено`;
+                }
+            }
+        }
+        
+        // Показ уведомления
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #4CAF50;
+                color: white;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+                z-index: 1000;
+                animation: slideInRight 0.3s;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.remove(), 3000);
+        }
+        
+        // Загрузка постов админа
+        function loadAdminPosts() {
+            const container = document.getElementById('adminPostsContainer');
+            const posts = JSON.parse(localStorage.getItem('cyberPosts')) || [];
+            
+            posts.forEach(post => {
+                const postElement = document.createElement('article');
+                postElement.className = 'post';
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <h3>${post.title}</h3>
+                        <span class="post-meta">Автор: Администратор | ${post.date}</span>
+                    </div>
+                    <div class="post-content">
+                        <p>${post.content}</p>
+                    </div>
+                `;
+                container.appendChild(postElement);
+            });
+        }
+        
+        // Добавляем стиль для анимации
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

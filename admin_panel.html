@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель администратора - CyberSafe Net</title>
+    <link rel="stylesheet" href="style.css">
+	
+</head>
+<body>
+    <div class="container admin-container">
+        <header class="admin-header">
+            <h1>👨‍🏫 Панель управления контентом</h1>
+            <nav>
+                <a href="feed.html" class="btn btn-small">Посмотреть ленту</a>
+                <a href="index.html" class="btn btn-small btn-logout">Выйти</a>
+				<!-- В секцию с навигацией (в header) добавь: -->
+<a href="admin_analytics.html" class="btn btn-small" style="background-color: #9C27B0;">📊 Аналитика</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="admin-form">
+                <h2>📝 Создать новый обучающий пост</h2>
+                <form id="newPostForm" onsubmit="return createNewPost(event)">
+                    <div class="form-group">
+                        <label for="postTitle">Заголовок поста:</label>
+                        <input type="text" id="postTitle" required placeholder="Например: Осторожно, фишинг!">
+                    </div>
+                    <div class="form-group">
+                        <label for="postContent">Содержание (теория):</label>
+                        <textarea id="postContent" rows="5" required placeholder="Опиши ситуацию, объясни правило безопасности..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" id="addPoll" onchange="togglePollFields()"> Добавить опрос к посту</label>
+                    </div>
+
+                    <div id="pollFields" class="poll-fields hidden">
+                        <div class="form-group">
+                            <label for="pollQuestion">Вопрос опроса:</label>
+                            <input type="text" id="pollQuestion" placeholder="Что бы ты сделал в этой ситуации?">
+                        </div>
+                        <div class="form-group">
+                            <label for="pollAnswer1">Вариант ответа 1:</label>
+                            <input type="text" id="pollAnswer1" placeholder="Первый вариант">
+                        </div>
+                        <div class="form-group">
+                            <label for="pollAnswer2">Вариант ответа 2:</label>
+                            <input type="text" id="pollAnswer2" placeholder="Второй вариант">
+                        </div>
+                        <div class="form-group">
+                            <label for="pollAnswer3">Вариант ответа 3 (необязательно):</label>
+                            <input type="text" id="pollAnswer3" placeholder="Третий вариант">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-admin">Опубликовать пост в ленту</button>
+                </form>
+            </section>
+
+            <section class="existing-posts">
+                <h2>📜 Существующие посты (управление)</h2>
+                <div id="postsList">
+                    <!-- Список постов, созданных админом, будет здесь -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Показываем/скрываем поля для опроса
+        function togglePollFields() {
+            const pollFields = document.getElementById('pollFields');
+            pollFields.classList.toggle('hidden');
+        }
+
+        // Функция создания нового поста
+        function createNewPost(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postContent').value;
+            const addPoll = document.getElementById('addPoll').checked;
+
+            // Собираем данные поста
+            const newPost = {
+                id: 'post-' + Date.now(), // уникальный ID
+                title: title,
+                content: content,
+                date: new Date().toLocaleDateString('ru-RU')
+            };
+
+            // Если есть опрос, добавляем его данные
+            if (addPoll) {
+                newPost.poll = true;
+                newPost.pollQuestion = document.getElementById('pollQuestion').value;
+                newPost.pollAnswer1 = document.getElementById('pollAnswer1').value;
+                newPost.pollAnswer2 = document.getElementById('pollAnswer2').value;
+                newPost.pollAnswer3 = document.getElementById('pollAnswer3').value;
+            }
+
+            // Получаем существующие посты из localStorage или создаем пустой массив
+            let posts = JSON.parse(localStorage.getItem('cyberPosts')) || [];
+            // Добавляем новый пост в начало массива
+            posts.unshift(newPost);
+            // Сохраняем обратно в localStorage
+            localStorage.setItem('cyberPosts', JSON.stringify(posts));
+
+            alert('Пост успешно создан и сохранен! Он появится в ленте учеников.');
+            // Очищаем форму
+            document.getElementById('newPostForm').reset();
+            // Перезагружаем список постов
+            loadPostsList();
+            return false;
+        }
+
+        // Функция загрузки списка постов для админа
+        function loadPostsList() {
+            const container = document.getElementById('postsList');
+            const posts = JSON.parse(localStorage.getItem('cyberPosts')) || [];
+
+            if (posts.length === 0) {
+                container.innerHTML = '<p>Пока нет созданных постов.</p>';
+                return;
+            }
+
+            let html = '';
+            posts.forEach((post, index) => {
+                html += `
+                <div class="post-preview">
+                    <h4>${post.title}</h4>
+                    <p><small>${post.date} | ${post.poll ? '📊 С опросом' : '📝 Только текст'}</small></p>
+                    <button class="btn btn-small btn-delete" onclick="deletePost(${index})">Удалить</button>
+                    <hr>
+                </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Функция удаления поста
+        function deletePost(index) {
+            if (confirm('Точно удалить этот пост?')) {
+                let posts = JSON.parse(localStorage.getItem('cyberPosts')) || [];
+                posts.splice(index, 1); // Удаляем пост по индексу
+                localStorage.setItem('cyberPosts', JSON.stringify(posts));
+                loadPostsList(); // Обновляем список
+            }
+        }
+
+        // Загружаем список постов при загрузке страницы
+        window.onload = loadPostsList;
+    </script>
+</body>
+</html>

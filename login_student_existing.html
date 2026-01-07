@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в аккаунт - CyberSafe Net</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-existing-container {
+            max-width: 500px;
+            margin: 50px auto;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #2196F3;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .remember-me input {
+            width: auto;
+        }
+        
+        .forgot-password {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .forgot-password a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+        
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+            border-left: 5px solid #f44336;
+        }
+        
+        .success-message {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+            border-left: 5px solid #4CAF50;
+        }
+        
+        .quick-login {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+        }
+        
+        .quick-login h3 {
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        .demo-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .demo-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px;
+            background-color: #757575;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .demo-btn:hover {
+            background-color: #616161;
+        }
+    </style>
+</head>
+<body>
+    <div class="container login-existing-container">
+        <div class="login-header">
+            <div class="login-icon">🔐</div>
+            <h1>Вход в аккаунт ученика</h1>
+            <p>Войдите, чтобы продолжить обучение</p>
+        </div>
+
+        <div id="errorMessage" class="error-message">
+            ❌ Неверный логин или пароль. Пожалуйста, проверьте введенные данные.
+        </div>
+
+        <div id="successMessage" class="success-message">
+            ✅ Вход выполнен успешно! Перенаправляем...
+        </div>
+
+        <form id="loginForm" class="login-form" onsubmit="return loginUser(event)">
+            <div class="form-group">
+                <label for="loginUsername">Имя пользователя:</label>
+                <input type="text" id="loginUsername" name="username" required 
+                       placeholder="Введите ваш логин" autocomplete="username">
+            </div>
+            
+            <div class="form-group">
+                <label for="loginPassword">Пароль:</label>
+                <input type="password" id="loginPassword" name="password" required 
+                       placeholder="Введите ваш пароль" autocomplete="current-password">
+            </div>
+            
+            <div class="remember-me">
+                <input type="checkbox" id="rememberMe" name="rememberMe">
+                <label for="rememberMe">Запомнить меня на этом устройстве</label>
+            </div>
+            
+            <button type="submit" class="btn" style="background-color: #2196F3; width: 100%;">
+                Войти в аккаунт
+            </button>
+            
+            <div class="forgot-password">
+                <a href="#" onclick="showForgotPassword()">Забыли пароль?</a>
+            </div>
+        </form>
+
+        <div class="quick-login">
+            <h3>Быстрый вход (демо-аккаунты):</h3>
+            <p>Выберите один из тестовых аккаунтов:</p>
+            <div class="demo-buttons">
+                <button class="demo-btn" onclick="quickLogin('demo1')">👤 Demo 1</button>
+                <button class="demo-btn" onclick="quickLogin('demo2')">👤 Demo 2</button>
+                <button class="demo-btn" onclick="quickLogin('demo3')">👤 Demo 3</button>
+            </div>
+        </div>
+
+        <div class="login-links" style="text-align: center; margin-top: 30px;">
+            <p>Еще нет аккаунта? <a href="login_student.html">Зарегистрируйтесь</a></p>
+            <button class="btn btn-back" onclick="window.location.href='login_student_choice.html'" 
+                    style="margin-top: 20px;">
+                ← Назад к выбору
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Функция для входа пользователя
+        function loginUser(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            // Получаем список существующих пользователей
+            const existingUsers = JSON.parse(localStorage.getItem('existingUsers')) || [];
+            
+            // Ищем пользователя
+            const user = existingUsers.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                // Пользователь найден - успешный вход
+                showSuccessMessage();
+                
+                // Сохраняем данные пользователя
+                localStorage.setItem('currentUser', user.username);
+                localStorage.setItem('userRole', 'student');
+                
+                // Если есть прогресс - загружаем его
+                const userProgress = JSON.parse(localStorage.getItem('userProgress')) || {};
+                if (!userProgress[user.username]) {
+                    userProgress[user.username] = {
+                        points: user.points || 0,
+                        answersCount: 0,
+                        lastActive: new Date().toISOString()
+                    };
+                    localStorage.setItem('userProgress', JSON.stringify(userProgress));
+                }
+                
+                // Если установлена галочка "Запомнить меня"
+                if (document.getElementById('rememberMe').checked) {
+                    localStorage.setItem('rememberedUser', username);
+                } else {
+                    localStorage.removeItem('rememberedUser');
+                }
+                
+                // Перенаправляем на ленту через 1 секунду
+                setTimeout(() => {
+                    window.location.href = 'feed.html';
+                }, 1000);
+                
+            } else {
+                // Пользователь не найден - показываем ошибку
+                showErrorMessage();
+            }
+            
+            return false;
+        }
+        
+        // Функция быстрого входа
+        function quickLogin(username) {
+            document.getElementById('loginUsername').value = username;
+            document.getElementById('loginPassword').value = 'Demo123!';
+            
+            // Автоматически отправляем форму
+            document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+        }
+        
+        // Показать сообщение об ошибке
+        function showErrorMessage() {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.style.display = 'block';
+            
+            // Добавляем анимацию
+            errorDiv.style.animation = 'shake 0.5s';
+            
+            // Через 5 секунд скрываем сообщение
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Показать сообщение об успехе
+        function showSuccessMessage() {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.style.display = 'block';
+            
+            // Скрываем форму
+            document.getElementById('loginForm').style.opacity = '0.5';
+            document.getElementById('loginForm').style.pointerEvents = 'none';
+        }
+        
+        // Функция "Забыли пароль"
+        function showForgotPassword() {
+            const username = prompt('Введите ваш логин для восстановления пароля:');
+            if (username) {
+                const existingUsers = JSON.parse(localStorage.getItem('existingUsers')) || [];
+                const user = existingUsers.find(u => u.username === username);
+                
+                if (user) {
+                    alert(`Для пользователя "${username}" пароль: ${user.password}\n\nВ реальной системе пароль был бы отправлен на вашу почту или сброшен.`);
+                } else {
+                    alert('Пользователь с таким логином не найден.');
+                }
+            }
+        }
+        
+        // При загрузке страницы проверяем, есть ли сохраненный пользователь
+        document.addEventListener('DOMContentLoaded', function() {
+            const rememberedUser = localStorage.getItem('rememberedUser');
+            if (rememberedUser) {
+                document.getElementById('loginUsername').value = rememberedUser;
+                document.getElementById('rememberMe').checked = true;
+            }
+            
+            // Создаем демо-аккаунты, если их нет
+            let existingUsers = JSON.parse(localStorage.getItem('existingUsers')) || [];
+            if (existingUsers.length === 0) {
+                const demoAccounts = [
+                    { username: 'demo1', password: 'Demo123!', points: 150 },
+                    { username: 'demo2', password: 'Demo123!', points: 90 },
+                    { username: 'demo3', password: 'Demo123!', points: 210 }
+                ];
+                localStorage.setItem('existingUsers', JSON.stringify(demoAccounts));
+            }
+            
+            // Добавляем анимацию тряски для ошибки
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                    20%, 40%, 60%, 80% { transform: translateX(5px); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

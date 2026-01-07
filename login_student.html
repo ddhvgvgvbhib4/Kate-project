@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация ученика - CyberSafe Net</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container login-container">
+        <header>
+            <h1>🛡️ Регистрация в CyberSafe Net</h1>
+        </header>
+
+        <main class="login-main">
+            <form id="registerForm" class="login-form" onsubmit="return registerUser(event)">
+                <h2>Создай свой аккаунт</h2>
+                <div class="form-group">
+                    <label for="username">Имя пользователя:</label>
+                    <input type="text" id="username" name="username" required placeholder="Например, Кибер_Иван">
+                </div>
+                <div class="form-group">
+                    <label for="password">Придумай пароль:</label>
+                    <input type="password" id="password" name="password" required placeholder="Вводи здесь..."
+                           oninput="checkPasswordStrength(this.value)">
+                    <div class="password-hints">
+                        <p><strong>Памятка по паролю:</strong></p>
+                        <ul>
+                            <li id="hint-length">🔴 Не менее 8 символов</li>
+                            <li id="hint-uppercase">🔴 Хотя бы одна заглавная буква (A-Z)</li>
+                            <li id="hint-lowercase">🔴 Хотя бы одна строчная буква (a-z)</li>
+                            <li id="hint-digit">🔴 Хотя бы одна цифра (0-9)</li>
+                            <li id="hint-special">🔴 Хотя бы один специальный символ (!@#$%^&*)</li>
+                        </ul>
+                    </div>
+                </div>
+                <button type="submit" class="btn" id="submitBtn" disabled>Зарегистрироваться и войти</button>
+                <p class="login-link">Уже есть аккаунт? <a href="#" onclick="alert('В прототипе просто зарегистрируйся')">Войди здесь</a></p>
+            </form>
+
+            <div class="password-feedback">
+                <div id="weakFeedback" class="feedback hidden">
+                    <h3>❌ Но-но-но! Пароль слабый!</h3>
+                    <p>Исправь отмеченные красным пункты, чтобы создать надежный пароль.</p>
+                </div>
+                <div id="strongFeedback" class="feedback hidden">
+                    <h3>✅ Отлично! Пароль надежный!</h3>
+                    <p><strong>Что такое надежный пароль?</strong> Это именно такой — длинный, сложный и уникальный. Он похож на крепкий замок на твоей цифровой двери. Такой пароль злоумышленнику очень сложно подобрать.</p>
+                    <p>Теперь ты можешь зарегистрироваться!</p>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <button class="btn btn-back" onclick="window.location.href='index.html'">На главную</button>
+        </footer>
+    </div>
+
+    <script>
+        // Функция проверки пароля в реальном времени
+        function checkPasswordStrength(password) {
+            const hints = {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                digit: /\d/.test(password),
+                special: /[!@#$%^&*]/.test(password)
+            };
+
+            // Обновляем подсказки
+            document.getElementById('hint-length').style.color = hints.length ? 'green' : 'red';
+            document.getElementById('hint-uppercase').style.color = hints.uppercase ? 'green' : 'red';
+            document.getElementById('hint-lowercase').style.color = hints.lowercase ? 'green' : 'red';
+            document.getElementById('hint-digit').style.color = hints.digit ? 'green' : 'red';
+            document.getElementById('hint-special').style.color = hints.special ? 'green' : 'red';
+
+            // Проверяем, все ли условия выполнены
+            const isStrong = Object.values(hints).every(hint => hint === true);
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Показываем обратную связь
+            if (password.length === 0) {
+                document.getElementById('weakFeedback').classList.add('hidden');
+                document.getElementById('strongFeedback').classList.add('hidden');
+                submitBtn.disabled = true;
+            } else if (isStrong) {
+                document.getElementById('weakFeedback').classList.add('hidden');
+                document.getElementById('strongFeedback').classList.remove('hidden');
+                submitBtn.disabled = false;
+            } else {
+                document.getElementById('weakFeedback').classList.remove('hidden');
+                document.getElementById('strongFeedback').classList.add('hidden');
+                submitBtn.disabled = true;
+            }
+        }
+
+        // Функция "регистрации" (имитация)
+        // После успешной регистрации добавляем пользователя в список существующих
+function registerUser(event) {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    // Сохраняем имя пользователя в localStorage
+    localStorage.setItem('currentUser', username);
+    localStorage.setItem('userRole', 'student');
+    
+    // Добавляем пользователя в список существующих
+    let existingUsers = JSON.parse(localStorage.getItem('existingUsers')) || [];
+    
+    // Проверяем, нет ли уже такого пользователя
+    if (!existingUsers.find(u => u.username === username)) {
+        existingUsers.push({
+            username: username,
+            password: password, // В реальной системе НЕ храним пароли в открытом виде!
+            points: 0
+        });
+        localStorage.setItem('existingUsers', JSON.stringify(existingUsers));
+    }
+    
+    // Создаем запись о прогрессе пользователя
+    let userProgress = JSON.parse(localStorage.getItem('userProgress')) || {};
+    if (!userProgress[username]) {
+        userProgress[username] = {
+            points: 0,
+            answersCount: 0,
+            lastActive: new Date().toISOString()
+        };
+        localStorage.setItem('userProgress', JSON.stringify(userProgress));
+    }
+    
+    alert(`Добро пожаловать, ${username}! Ты успешно зарегистрирован(а).\n\nТвой начальный балл: 0\nЗарабатывай баллы, отвечая на вопросы!`);
+    window.location.href = 'feed.html';
+    return false;
+}
+    </script>
+</body>
+</html>

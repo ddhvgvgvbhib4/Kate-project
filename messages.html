@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чаты - CyberSafe Net</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .messages-container {
+            display: flex;
+            height: 80vh;
+            gap: 20px;
+        }
+        
+        .chats-list {
+            flex: 1;
+            min-width: 250px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .chat-window {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .chat-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .messages-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #fafafa;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            max-width: 70%;
+        }
+        
+        .message.received {
+            align-self: flex-start;
+        }
+        
+        .message.sent {
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        
+        .message-bubble {
+            padding: 12px 18px;
+            border-radius: 18px;
+            position: relative;
+        }
+        
+        .received .message-bubble {
+            background: white;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .sent .message-bubble {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .message-time {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        .chat-input {
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+        }
+        
+        .chat-input textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: none;
+            height: 60px;
+        }
+        
+        .chat-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        
+        .chat-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .chat-item:hover {
+            background: #f5f5f5;
+        }
+        
+        .chat-item.active {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .chat-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .chat-preview {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .cyberbullying-scenario {
+            background: #fff3cd;
+            border: 2px dashed #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .scenario-question {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #856404;
+        }
+        
+        .scenario-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .scenario-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .scenario-btn.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .scenario-btn.wrong {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .scenario-feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .feedback-correct {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .feedback-wrong {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .support-message {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="feed-header">
+            <h1>💬 Чаты и сообщения</h1>
+            <nav>
+                <a href="feed.html" class="btn btn-small">← К ленте</a>
+                <span id="welcomeUser">Привет, Ученик!</span>
+                <a href="index.html" class="btn btn-small">Выйти</a>
+            </nav>
+        </header>
+
+        <div class="cyberbullying-scenario">
+            <div class="scenario-question">
+                <h3>📚 Тема: Кибербуллинг и общение в сети</h3>
+                <p><strong>Задание 1 — "Комментаторы":</strong> Под постом одноклассницы начались насмешки. Что можно сделать?</p>
+            </div>
+            <div class="scenario-options">
+                <button class="scenario-btn correct" onclick="showScenarioFeedback('support', 'Правильно! Поддержка важна для тех, кто подвергается травле.')">
+                    Написать ей слова поддержки
+                </button>
+                <button class="scenario-btn correct" onclick="showScenarioFeedback('teacher', 'Верно! Учитель может помочь остановить травлю.')">
+                    Сделать скрин и обсудить с учителем
+                </button>
+                <button class="scenario-btn wrong" onclick="showScenarioFeedback('join', 'Нет! Присоединяться к травле никогда нельзя.')">
+                    Присоединиться к шуткам
+                </button>
+            </div>
+            <div class="scenario-feedback" id="scenario-feedback-1"></div>
+        </div>
+
+        <div class="cyberbullying-scenario">
+            <div class="scenario-question">
+                <p><strong>Задание 2 — "Чат в классе":</strong> Группа "8Б forever" пишет обидные мемы про Петю. Что ты выберешь?</p>
+            </div>
+            <div class="scenario-options">
+                <button class="scenario-btn correct" onclick="showScenarioFeedback('leave', 'Правильно! Выход из токсичного чата — это защита.')">
+                    Выйти из чата и пожаловаться
+                </button>
+                <button class="scenario-btn wrong" onclick="showScenarioFeedback('like', 'Нет! Лайк поддерживает травлю.')">
+                    Поставить "лайк"
+                </button>
+            </div>
+            <div class="scenario-feedback" id="scenario-feedback-2"></div>
+        </div>
+
+        <div class="support-message">
+            <h4>💡 Задание 3 — Поддержка пострадавшего</h4>
+            <p>Составь короткий комментарий, который поможет пострадавшему человеку почувствовать, что он не один.</p>
+            <p>Выбери поддерживающие реплики:</p>
+            <div class="scenario-options">
+                <button class="scenario-btn wrong" onclick="showSupportFeedback('blame', 'Нет! Обвинение только усилит страдания.')">
+                    "Ты сам виноват!"
+                </button>
+                <button class="scenario-btn correct" onclick="showSupportFeedback('talk', 'Отлично! Показываешь готовность поддержать.')">
+                    "Поговори, я рядом."
+                </button>
+                <button class="scenario-btn wrong" onclick="showSupportFeedback('ignore', 'Неправильно! Это обесценивает чувства человека.')">
+                    "Забей, всем плевать."
+                </button>
+                <button class="scenario-btn correct" onclick="showSupportFeedback('encourage', 'Хорошо! Даешь надежду на лучшее.')">
+                    "Не грусти, это пройдёт."
+                </button>
+            </div>
+            <div class="scenario-feedback" id="support-feedback"></div>
+        </div>
+
+        <div class="messages-container">
+            <div class="chats-list">
+                <h3>📱 Чаты</h3>
+                <div class="chat-item active" onclick="switchChat('class')">
+                    <div class="chat-name">8Б Классный чат</div>
+                    <div class="chat-preview">Обсуждение домашних заданий...</div>
+                </div>
+                <div class="chat-item" onclick="switchChat('friends')">
+                    <div class="chat-name">Друзья</div>
+                    <div class="chat-preview">Маша: Привет! Как дела?</div>
+                </div>
+                <div class="chat-item" onclick="switchChat('group')">
+                    <div class="chat-name">8Б forever</div>
+                    <div class="chat-preview">Посмотрите этот мем про...</div>
+                </div>
+            </div>
+            
+            <div class="chat-window">
+                <div class="chat-header">
+                    <h3 id="current-chat-name">8Б Классный чат</h3>
+                    <p id="current-chat-status">3 участника • Тема: учеба</p>
+                </div>
+                
+                <div class="messages-area" id="messages-area">
+                    <!-- Сообщения будут загружаться через JS -->
+                </div>
+                
+                <div class="chat-input">
+                    <textarea id="message-input" placeholder="Напишите сообщение... (Это учебный чат)"></textarea>
+                    <div class="chat-actions">
+                        <button class="btn btn-small" onclick="sendMessage()">Отправить</button>
+                        <button class="btn btn-small btn-back" onclick="showSafetyTips()">ℹ️ Советы безопасности</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer style="margin-top: 30px;">
+            <p><strong>Помни:</strong> В чатах важно сохранять уважение к другим. Если видишь травлю — не молчи!</p>
+            <button class="btn btn-back" onclick="window.location.href='feed.html'">← Назад к ленте</button>
+        </footer>
+    </div>
+
+    <script>
+        // Показываем имя пользователя
+        const currentUser = localStorage.getItem('currentUser') || 'Ученик';
+        document.getElementById('welcomeUser').textContent = `Привет, ${currentUser}!`;
+        
+        // Данные чатов
+        const chats = {
+            class: {
+                name: '8Б Классный чат',
+                status: '3 участника • Тема: учеба',
+                messages: [
+                    { sender: 'Учитель', text: 'Напоминаю про домашнее задание по информатике', time: '10:30', type: 'received' },
+                    { sender: currentUser, text: 'Я сделал!', time: '10:32', type: 'sent' },
+                    { sender: 'Маша', text: 'Можете помочь с 3 заданием?', time: '10:35', type: 'received' }
+                ]
+            },
+            friends: {
+                name: 'Друзья',
+                status: '2 участника • Личный чат',
+                messages: [
+                    { sender: 'Маша', text: 'Привет! Как дела?', time: '09:15', type: 'received' },
+                    { sender: currentUser, text: 'Привет! Все хорошо, готовлюсь к контрольной', time: '09:20', type: 'sent' }
+                ]
+            },
+            group: {
+                name: '8Б forever',
+                status: '15 участников • Активен',
+                messages: [
+                    { sender: 'Кирилл', text: 'Посмотрите этот мем про Петю 😂', time: '11:45', type: 'received' },
+                    { sender: 'Аня', text: 'Не смешно, это обидно', time: '11:47', type: 'received' },
+                    { sender: currentUser, text: 'Давайте не будем высмеивать одноклассников', time: '11:50', type: 'sent' }
+                ]
+            }
+        };
+        
+        // Переключение чатов
+        function switchChat(chatId) {
+            // Обновляем активный элемент в списке
+            document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.chat-item').classList.add('active');
+            
+            // Загружаем сообщения
+            const chat = chats[chatId];
+            document.getElementById('current-chat-name').textContent = chat.name;
+            document.getElementById('current-chat-status').textContent = chat.status;
+            
+            const messagesArea = document.getElementById('messages-area');
+            messagesArea.innerHTML = '';
+            
+            chat.messages.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${msg.type}`;
+                messageDiv.innerHTML = `
+                    <div class="message-bubble">${msg.text}</div>
+                    <div class="message-time">${msg.sender} • ${msg.time}</div>
+                `;
+                messagesArea.appendChild(messageDiv);
+            });
+            
+            // Прокручиваем вниз
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+        
+        // Отправка сообщения
+        function sendMessage() {
+            const input = document.getElementById('message-input');
+            const text = input.value.trim();
+            
+            if (text) {
+                const messagesArea = document.getElementById('messages-area');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message sent';
+                messageDiv.innerHTML = `
+                    <div class="message-bubble">${text}</div>
+                    <div class="message-time">${currentUser} • ${new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'})}</div>
+                `;
+                messagesArea.appendChild(messageDiv);
+                input.value = '';
+                
+                // Прокручиваем вниз
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+                
+                // Симуляция ответа
+                setTimeout(() => {
+                    const replies = [
+                        'Спасибо за сообщение!',
+                        'Интересно, продолжай!',
+                        'Я согласен с тобой',
+                        'Хорошая мысль!'
+                    ];
+                    const reply = replies[Math.floor(Math.random() * replies.length)];
+                    
+                    const replyDiv = document.createElement('div');
+                    replyDiv.className = 'message received';
+                    replyDiv.innerHTML = `
+                        <div class="message-bubble">${reply}</div>
+                        <div class="message-time">Участник • ${new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'})}</div>
+                    `;
+                    messagesArea.appendChild(replyDiv);
+                    messagesArea.scrollTop = messagesArea.scrollHeight;
+                }, 1000);
+            }
+        }
+        
+        // Функции для сценариев
+        function showScenarioFeedback(type, message) {
+            const feedbackDiv = document.getElementById('scenario-feedback-1');
+            feedbackDiv.className = 'scenario-feedback feedback-correct';
+            feedbackDiv.textContent = message;
+            feedbackDiv.style.display = 'block';
+            
+            // Сохраняем ответ ученика
+            saveStudentAnswer('cyberbullying', 'chat_scenario', type);
+        }
+        
+        function showSupportFeedback(type, message) {
+            const feedbackDiv = document.getElementById('support-feedback');
+            feedbackDiv.className = 'scenario-feedback ' + 
+                (type === 'blame' || type === 'ignore' ? 'feedback-wrong' : 'feedback-correct');
+            feedbackDiv.textContent = message;
+            feedbackDiv.style.display = 'block';
+            
+            saveStudentAnswer('cyberbullying', 'support_message', type);
+        }
+        
+        function showSafetyTips() {
+            alert('📱 Советы безопасности в чатах:\n\n1. Не делитесь личной информацией\n2. Не переходите по подозрительным ссылкам\n3. Сообщайте о травле учителям\n4. Уважайте других участников\n5. Проверяйте личность собеседников');
+        }
+        
+        // Сохранение ответов ученика
+        function saveStudentAnswer(topic, question, answer) {
+            const answerData = {
+                topic: topic,
+                question: question,
+                answer: answer,
+                student: currentUser,
+                timestamp: new Date().toISOString(),
+                points: 10
+            };
+            
+            let answers = JSON.parse(localStorage.getItem('studentAnswers')) || [];
+            answers.push(answerData);
+            localStorage.setItem('studentAnswers', JSON.stringify(answers));
+            
+            // Обновляем прогресс
+            updateStudentProgress();
+        }
+        
+        // Обновление прогресса
+        function updateStudentProgress() {
+            let progress = JSON.parse(localStorage.getItem('userProgress')) || {};
+            if (!progress[currentUser]) {
+                progress[currentUser] = { points: 0, answersCount: 0 };
+            }
+            progress[currentUser].points += 10;
+            progress[currentUser].answersCount += 1;
+            localStorage.setItem('userProgress', JSON.stringify(progress));
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            switchChat('class');
+        });
+    </script>
+</body>
+</html>

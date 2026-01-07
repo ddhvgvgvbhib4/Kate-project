@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход для учеников - CyberSafe Net</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-choice-container {
+            max-width: 600px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        
+        .choice-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin: 40px 0;
+        }
+        
+        .choice-card {
+            flex: 1;
+            min-width: 250px;
+            padding: 40px 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+            background: white;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .choice-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .choice-card.register {
+            border-top: 5px solid #4CAF50;
+        }
+        
+        .choice-card.login {
+            border-top: 5px solid #2196F3;
+        }
+        
+        .choice-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .student-info {
+            background-color: #f0f7ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: left;
+            border-left: 5px solid #2196F3;
+        }
+        
+        .student-info h3 {
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+        
+        .demo-accounts {
+            background-color: #fff8e1;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: left;
+            border-left: 5px solid #ffb300;
+        }
+        
+        .demo-accounts h3 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+        
+        .demo-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .demo-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ffcc80;
+        }
+        
+        .demo-list li:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container login-choice-container">
+        <header>
+            <h1>👨‍🎓 Вход для учеников</h1>
+            <p class="tagline">Выберите способ входа в CyberSafe Net</p>
+        </header>
+
+        <div class="choice-cards">
+            <div class="choice-card register" onclick="window.location.href='login_student.html'">
+                <div class="choice-icon">📝</div>
+                <h2>Регистрация</h2>
+                <p>Создать новый аккаунт ученика</p>
+                <ul style="text-align: left; margin: 20px 0; padding-left: 20px;">
+                    <li>Создать уникальное имя</li>
+                    <li>Придумать надежный пароль</li>
+                    <li>Начать обучение с нуля</li>
+                </ul>
+                <button class="btn" style="background-color: #4CAF50;">Зарегистрироваться</button>
+            </div>
+
+            <div class="choice-card login" onclick="window.location.href='login_student_existing.html'">
+                <div class="choice-icon">🔐</div>
+                <h2>Войти</h2>
+                <p>Войти в существующий аккаунт</p>
+                <ul style="text-align: left; margin: 20px 0; padding-left: 20px;">
+                    <li>Использовать существующий логин</li>
+                    <li>Продолжить обучение</li>
+                    <li>Сохранить прогресс и баллы</li>
+                </ul>
+                <button class="btn" style="background-color: #2196F3;">Войти в аккаунт</button>
+            </div>
+        </div>
+
+        <div class="student-info">
+            <h3>📚 Что такое CyberSafe Net для учеников?</h3>
+            <p>Это безопасная социальная сеть, где вы можете:</p>
+            <ul>
+                <li>Изучать основы кибербезопасности</li>
+                <li>Участвовать в опросах и обсуждениях</li>
+                <li>Зарабатывать баллы за активность</li>
+                <li>Сравнивать свой прогресс с одноклассниками</li>
+                <li>Получать награды за достижения</li>
+            </ul>
+        </div>
+
+        <div class="demo-accounts">
+            <h3>🎮 Демо-аккаунты для тестирования</h3>
+            <p>Вы можете использовать эти данные для быстрого входа:</p>
+            <ul class="demo-list">
+                <li><strong>Логин:</strong> demo1 | <strong>Пароль:</strong> Demo123!</li>
+                <li><strong>Логин:</strong> demo2 | <strong>Пароль:</strong> Demo123!</li>
+                <li><strong>Логин:</strong> demo3 | <strong>Пароль:</strong> Demo123!</li>
+            </ul>
+            <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">
+                * Это тестовые аккаунты. В реальной системе каждый ученик создает свой уникальный аккаунт.
+            </p>
+        </div>
+
+        <footer style="margin-top: 40px;">
+            <button class="btn btn-back" onclick="window.location.href='index.html'">← На главную</button>
+            <p style="margin-top: 20px; font-size: 0.9rem; color: #666;">
+                Учебный проект по кибербезопасности
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Автоматически создаем демо-аккаунты при первом посещении
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем, созданы ли уже демо-аккаунты
+            let existingUsers = JSON.parse(localStorage.getItem('existingUsers')) || [];
+            
+            if (existingUsers.length === 0) {
+                // Создаем демо-аккаунты
+                const demoAccounts = [
+                    { username: 'demo1', password: 'Demo123!', points: 150 },
+                    { username: 'demo2', password: 'Demo123!', points: 90 },
+                    { username: 'demo3', password: 'Demo123!', points: 210 }
+                ];
+                
+                localStorage.setItem('existingUsers', JSON.stringify(demoAccounts));
+                console.log('Демо-аккаунты созданы');
+            }
+        });
+    </script>
+</body>
+</html>
